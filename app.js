@@ -10,7 +10,12 @@ function link(label, url, kind = '') {
 
 function foodList(food = []) {
   if (!food.length) return '<p class="muted">Ресторан лучше выбрать по маршруту и свежим отзывам в день поездки.</p>';
-  return food.map(item => `<li><div><strong>${esc(item.name)}</strong><span>${esc(item.note)}</span></div><div class="food-links">${link('Сайт', item.web)}${link('Карта', item.map)}</div></li>`).join('');
+  return food.map(item => `<li><div><strong>${esc(item.name)}</strong><span>${esc(item.note)}</span><div class="restaurant-meta"><b>${item.rating ? `★ ${esc(item.rating)} Google` : '★ проверить Google'}</b>${item.price ? `<b>${esc(item.price)}</b>` : ''}</div></div><div class="food-links">${link('Сайт', item.web)}${link('Карта', item.map)}</div></li>`).join('');
+}
+
+function activitiesList(activities = []) {
+  if (!activities.length) return '';
+  return `<section class="activities"><div class="subheading"><p class="mini-title">Активный отдых</p><span>${activities.length} варианта</span></div>${activities.map(item => `<div class="activity-row"><span>${item.icon}</span><div><strong>${esc(item.name)}</strong><p>${esc(item.detail)}</p></div></div>`).join('')}</section>`;
 }
 
 function renderStops() {
@@ -23,6 +28,7 @@ function renderStops() {
       </button>
       <div class="stop-panel" id="panel-${esc(stop.id)}">
         <div class="stop-content">
+          ${stop.transfer ? `<section class="transfer-card"><div class="transfer-route"><span>Переезд</span><strong>${esc(stop.transfer.from)}</strong></div><div class="transfer-time"><b>${esc(stop.transfer.time)}</b><small>${esc(stop.transfer.distance)}</small></div><p>${esc(stop.transfer.note)}</p></section>` : ''}
           <section class="general-block"><p class="mini-title">Общее</p><p>${esc(stop.intro)}</p><div class="transport-pill">⌁ ${esc(stop.transport)}</div></section>
           ${stop.arrival ? `<section class="arrival"><p class="mini-title">${esc(stop.arrival.title)}</p><p>${esc(stop.arrival.text)}</p><div class="inline-links">${stop.arrival.links.map(x => link(x.label,x.url)).join('')}</div></section>` : ''}
           <section class="weather-block">
@@ -31,6 +37,7 @@ function renderStops() {
             <p class="weather-note">${esc(stop.weather.note)}</p>
           </section>
           ${stop.warning ? `<aside class="warning"><strong>Обратите внимание</strong><p>${esc(stop.warning)}</p></aside>` : ''}
+          ${activitiesList(stop.activities)}
           <section class="poi-section"><div class="subheading"><p class="mini-title">Планируем посетить</p><span>${stop.pois.length} мест</span></div>
             <div class="poi-list">${stop.pois.map((poi, poiIndex) => `<button class="poi-row" type="button" data-stop-index="${index}" data-poi-index="${poiIndex}"><span class="poi-icon">${poi.icon}</span><span><strong>${esc(poi.name)}</strong><small>${esc(poi.teaser)}</small><em>${esc(poi.duration)} · ${esc(poi.age)}</em></span><b>→</b></button>`).join('')}</div>
           </section>
@@ -47,7 +54,7 @@ function openPoi(stopIndex, poiIndex) {
       <p class="lead">${esc(poi.description)}</p>
       <div class="dialog-actions">${link('Показать на карте',poi.map,'primary')}${link('Начать навигацию',poi.nav)}${link('Официальный сайт',poi.website)}</div>
       <div class="practical"><div><span>Ⓟ</span><section><strong>Парковка и подход</strong><p>${esc(poi.parking)}</p></section></div><div><span>◷</span><section><strong>Когда приезжать</strong><p>${esc(poi.hours)}</p></section></div><div class="attention"><span>!</span><section><strong>На что обратить внимание</strong><p>${esc(poi.watch)}</p></section></div></div>
-      <div class="food-card"><p class="mini-title">Где поесть рядом</p><ul>${foodList(poi.food)}</ul></div>
+      <div class="food-card"><p class="mini-title">Где поесть рядом · Google на 09.08.26</p><ul>${foodList(poi.food)}</ul></div>
     </div>`;
   dialog.showModal(); document.body.classList.add('modal-open');
 }
