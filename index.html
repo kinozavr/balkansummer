@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#123c36" />
+  <meta name="description" content="Семейный маршрут по Албании и Северной Македонии, август 2026" />
+  <meta property="og:title" content="Балканское лето · Семейный маршрут 2026" />
+  <meta property="og:description" content="17 дней, 6 остановок и семейные приключения по Албании и Северной Македонии" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <title>Балканское лето · Семейный маршрут 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <nav class="topbar" aria-label="Главная навигация">
+      <a class="brand" href="#top" aria-label="К началу страницы">BALKAN<span>26</span></a>
+      <button class="compact-button" id="expandAll" type="button">Развернуть всё</button>
+    </nav>
+    <div class="hero-content" id="top">
+      <p class="eyebrow">13–29 августа 2026 · 17 дней · 2 страны</p>
+      <h1>Балканское<br /><em>лето</em></h1>
+      <p class="hero-copy">Семейный маршрут для двух исследователей 6 и 9 лет — от канатной дороги Тираны до тёплого Ионического моря.</p>
+      <div class="hero-stats" aria-label="Краткая информация о поездке">
+        <div><strong>6</strong><span>остановок</span></div>
+        <div><strong>2</strong><span>страны</span></div>
+        <div><strong>≈900</strong><span>км на авто</span></div>
+      </div>
+    </div>
+    <div class="route-line" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </header>
+
+  <main>
+    <section class="notice" aria-label="Важная информация">
+      <span class="notice-icon">i</span>
+      <div><strong>О прогнозе</strong><p>Точные данные появятся за 7–10 дней до поездки. Сейчас показана типичная августовская погода и рекомендации по экипировке.</p></div>
+    </section>
+
+    <section class="trip-section" aria-labelledby="route-title">
+      <div class="section-heading">
+        <p class="eyebrow dark">Маршрут по дням</p>
+        <h2 id="route-title">Шесть глав<br />одной поездки</h2>
+      </div>
+      <div class="stops" id="stops"></div>
+    </section>
+
+    <section class="road-note">
+      <p class="eyebrow">Перед получением автомобиля</p>
+      <h2>Граница — важнее навигатора</h2>
+      <p>Письменно подтвердите у прокатчика выезд из Албании в Северную Македонию и обратный въезд, международную страховку/Green Card, трансграничный сбор, разрешение на дорогу в Тет и наличие запасного колеса.</p>
+      <div class="road-chips"><span>Офлайн-карты</span><span>Оба водителя</span><span>Не ехать ночью</span><span>Green Card</span></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>BALKAN26 · Семейный план путешествия</p>
+    <p>Расписание и цены проверяйте непосредственно перед посещением.</p>
+  </footer>
+
+  <dialog class="poi-dialog" id="poiDialog" aria-labelledby="dialogTitle">
+    <button class="dialog-close" id="dialogClose" type="button" aria-label="Закрыть">×</button>
+    <div id="dialogContent"></div>
+  </dialog>
+
+  <script src="trip-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
