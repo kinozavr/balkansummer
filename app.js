@@ -1,75 +1,36 @@
-const data = window.TRIP_DATA;
+let lang = localStorage.getItem('balkan26-language') === 'en' ? 'en' : 'ru';
+let data = lang === 'en' ? window.TRIP_DATA_EN : window.TRIP_DATA;
 const stopsRoot = document.querySelector('#stops');
 const dialog = document.querySelector('#poiDialog');
 const dialogContent = document.querySelector('#dialogContent');
 const esc = (value = '') => String(value).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ui = {
+  ru:{general:'Общее',transfer:'Переезд',weather:'Типичная погода',day:'днём',night:'Ночью',rain:'Осадки',feel:'Ощущение',attention:'Обратите внимание',activities:'Активный отдых',options:'варианта',planned:'Планируем посетить',places:'мест',age:'Возраст',map:'Показать на карте',nav:'Начать навигацию',site:'Официальный сайт',parking:'Парковка и подход',when:'Когда приезжать',watch:'На что обратить внимание',food:'Где поесть рядом · Google на 09.08.26',web:'Сайт',gmaps:'Карта',fallback:'Ресторан лучше выбрать по свежим отзывам в день поездки.',check:'★ проверить Google',roadStops:'Остановки в долгом переезде',shopping:'Шопинг по маршруту',brands:'Что искать'},
+  en:{general:'General',transfer:'Transfer',weather:'Typical weather',day:'daytime',night:'Night',rain:'Rain',feel:'Feels like',attention:'Pay attention',activities:'Active options',options:'options',planned:'Planned attractions',places:'places',age:'Age',map:'Show on map',nav:'Start navigation',site:'Official website',parking:'Parking and approach',when:'When to arrive',watch:'What to watch for',food:'Food nearby · Google as of 9 Aug 2026',web:'Website',gmaps:'Map',fallback:'Choose a restaurant using fresh reviews on the day.',check:'★ check Google',roadStops:'Stops on the long drive',shopping:'Shopping along the route',brands:'Best for'}
+};
+const staticText={
+  ru:{heroEyebrow:'13–29 августа 2026 · 17 дней · 2 страны',titleMain:'Балканское',titleAccent:'лето',heroCopy:'Маршрут для двух семей: четырёх взрослых и четырёх детей 6, 8, 9 и 10 лет — от канатной дороги Тираны до тёплого Ионического моря.',statTravelers:'путешественников',statStops:'остановок',statCountries:'страны',forecastTitle:'О прогнозе',forecastCopy:'Точные данные появятся за 7–10 дней до поездки. Сейчас показана типичная августовская погода и рекомендации по экипировке.',routeEyebrow:'Маршрут по дням',routeTitle:'Шесть глав<br>одной поездки',roadEyebrow:'Перед получением автомобиля',roadTitle:'Граница — важнее навигатора',roadCopy:'Письменно подтвердите у прокатчика выезд из Албании в Косово и Северную Македонию и обратный въезд, страховку/Green Card и трансграничные сборы. Для группы из восьми заранее проверьте вместимость багажа; если машин две, разрешения нужны для каждой.',footerTitle:'BALKAN26 · План путешествия двух семей',footerCopy:'Расписание, рейтинги и цены проверяйте непосредственно перед посещением.'},
+  en:{heroEyebrow:'13–29 August 2026 · 17 days · 2 countries',titleMain:'Balkan',titleAccent:'summer',heroCopy:'A route for two families: four adults and four children aged 6, 8, 9 and 10—from Tirana’s cable car to the warm Ionian Sea.',statTravelers:'travellers',statStops:'stops',statCountries:'countries',forecastTitle:'About the forecast',forecastCopy:'A precise forecast will be available 7–10 days before the trip. For now, the site shows typical August conditions and packing advice.',routeEyebrow:'Day-by-day route',routeTitle:'Six chapters<br>one journey',roadEyebrow:'Before collecting the cars',roadTitle:'Borders matter more than navigation',roadCopy:'Get written rental approval for Albania, Kosovo and North Macedonia, return entry, Green Card insurance and cross-border fees. For eight travellers, check luggage capacity; if using two cars, every permission is required for both.',footerTitle:'BALKAN26 · Two-family travel plan',footerCopy:'Recheck opening hours, ratings and prices immediately before visiting.'}
+};
 
-function link(label, url, kind = '') {
-  return url ? `<a class="action-link ${kind}" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)} <span>↗</span></a>` : '';
-}
+function link(label,url,kind=''){return url?`<a class="action-link ${kind}" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)} <span>↗</span></a>`:'';}
+function foodList(food=[]){const t=ui[lang];if(!food.length)return `<p class="muted">${t.fallback}</p>`;return food.map(item=>`<li><div><strong>${esc(item.name)}</strong><span>${esc(item.note)}</span><div class="restaurant-meta"><b>${item.rating?`★ ${esc(item.rating)} Google`:t.check}</b>${item.price?`<b>${esc(item.price)}</b>`:''}</div></div><div class="food-links">${link(t.web,item.web)}${link(t.gmaps,item.map)}</div></li>`).join('');}
+function activitiesList(items=[]){if(!items.length)return'';const t=ui[lang];return `<section class="activities"><div class="subheading"><p class="mini-title">${t.activities}</p><span>${items.length} ${t.options}</span></div>${items.map(x=>`<div class="activity-row"><span>${x.icon}</span><div><strong>${esc(x.name)}</strong><p>${esc(x.detail)}</p></div></div>`).join('')}</section>`;}
+function journeyList(items=[]){if(!items.length)return'';const t=ui[lang];return `<section class="journey-section"><p class="mini-title">${t.roadStops}</p><div class="journey-list">${items.map(x=>`<article><span>${x.icon}</span><div><strong>${esc(x.name)}</strong><div class="journey-meta">${esc(x.timing)} · ${esc(x.stay)}</div><p>${esc(x.detail)}</p><div class="inline-links">${link(t.site,x.website)}${link(t.gmaps,x.map)}</div></div></article>`).join('')}</div></section>`;}
+function shoppingList(items=[]){if(!items.length)return'';const t=ui[lang];return `<section class="shopping-section"><div class="subheading"><p class="mini-title">${t.shopping}</p><span>${items.length}</span></div>${items.map(x=>`<article class="shopping-card"><span>${x.icon}</span><div><strong>${esc(x.name)}</strong><p>${esc(x.note)}</p><small><b>${t.brands}:</b> ${esc(x.brands)}</small><small>◷ ${esc(x.hours)}</small><div class="inline-links">${link(t.site,x.website)}${link(t.gmaps,x.map)}</div></div></article>`).join('')}</section>`;}
 
-function foodList(food = []) {
-  if (!food.length) return '<p class="muted">Ресторан лучше выбрать по маршруту и свежим отзывам в день поездки.</p>';
-  return food.map(item => `<li><div><strong>${esc(item.name)}</strong><span>${esc(item.note)}</span><div class="restaurant-meta"><b>${item.rating ? `★ ${esc(item.rating)} Google` : '★ проверить Google'}</b>${item.price ? `<b>${esc(item.price)}</b>` : ''}</div></div><div class="food-links">${link('Сайт', item.web)}${link('Карта', item.map)}</div></li>`).join('');
-}
+function renderStops(){const t=ui[lang];stopsRoot.innerHTML=data.map((stop,index)=>`<article class="stop ${index===0?'open':''}" data-stop="${esc(stop.id)}"><button class="stop-head" type="button" aria-expanded="${index===0}" aria-controls="panel-${esc(stop.id)}"><span class="stop-number">${esc(stop.number)}</span><span class="stop-title"><small>${esc(stop.dates)} · ${esc(stop.country)}</small><strong>${esc(stop.city)}</strong><em>${esc(stop.nights)} · ${esc(stop.hotel)}</em></span><span class="stop-toggle">+</span></button><div class="stop-panel" id="panel-${esc(stop.id)}"><div class="stop-content">
+${stop.transfer?`<section class="transfer-card"><div class="transfer-route"><span>${t.transfer}</span><strong>${esc(stop.transfer.from)}</strong></div><div class="transfer-time"><b>${esc(stop.transfer.time)}</b><small>${esc(stop.transfer.distance)}</small></div><p>${esc(stop.transfer.note)}</p></section>`:''}
+${journeyList(stop.journeyStops)}<section class="general-block"><p class="mini-title">${t.general}</p><p>${esc(stop.intro)}</p><div class="transport-pill">⌁ ${esc(stop.transport)}</div></section>
+${stop.arrival?`<section class="arrival"><p class="mini-title">${esc(stop.arrival.title)}</p><p>${esc(stop.arrival.text)}</p><div class="inline-links">${stop.arrival.links.map(x=>link(x.label,x.url)).join('')}</div></section>`:''}
+<section class="weather-block"><div class="weather-top"><div><p class="mini-title">${t.weather}</p><strong>${esc(stop.weather.high)}</strong><span>${t.day}</span></div><div class="weather-art"><span>☀</span><i></i><i></i><i></i></div></div><div class="weather-grid"><div><small>${t.night}</small><b>${esc(stop.weather.low)}</b></div><div><small>${t.rain}</small><b>${esc(stop.weather.rain)}</b></div><div><small>${t.feel}</small><b>${esc(stop.weather.feel)}</b></div></div><p class="weather-note">${esc(stop.weather.note)}</p></section>
+${stop.warning?`<aside class="warning"><strong>${t.attention}</strong><p>${esc(stop.warning)}</p></aside>`:''}${activitiesList(stop.activities)}${shoppingList(stop.shopping)}
+<section class="poi-section"><div class="subheading"><p class="mini-title">${t.planned}</p><span>${stop.pois.length} ${t.places}</span></div><div class="poi-list">${stop.pois.map((poi,i)=>`<button class="poi-row" type="button" data-stop-index="${index}" data-poi-index="${i}"><span class="poi-icon">${poi.icon}</span><span><strong>${esc(poi.name)}</strong><small>${esc(poi.teaser)}</small><em>${esc(poi.duration)} · ${esc(poi.age)}</em></span><b>→</b></button>`).join('')}</div></section></div></div></article>`).join('');}
 
-function activitiesList(activities = []) {
-  if (!activities.length) return '';
-  return `<section class="activities"><div class="subheading"><p class="mini-title">Активный отдых</p><span>${activities.length} варианта</span></div>${activities.map(item => `<div class="activity-row"><span>${item.icon}</span><div><strong>${esc(item.name)}</strong><p>${esc(item.detail)}</p></div></div>`).join('')}</section>`;
-}
+function openPoi(si,pi){const t=ui[lang],stop=data[si],poi=stop.pois[pi];dialogContent.innerHTML=`<div class="dialog-hero"><span>${poi.icon}</span><p>${esc(stop.city)} · ${esc(poi.duration)}</p><h2 id="dialogTitle">${esc(poi.name)}</h2><div class="tag">${t.age}: ${esc(poi.age)}</div></div><div class="dialog-body"><p class="lead">${esc(poi.description)}</p><div class="dialog-actions">${link(t.map,poi.map,'primary')}${link(t.nav,poi.nav)}${link(t.site,poi.website)}</div><div class="practical"><div><span>⌁</span><section><strong>${t.parking}</strong><p>${esc(poi.parking)}</p></section></div><div><span>◷</span><section><strong>${t.when}</strong><p>${esc(poi.hours)}</p></section></div><div class="attention"><span>!</span><section><strong>${t.watch}</strong><p>${esc(poi.watch)}</p></section></div></div><div class="food-card"><p class="mini-title">${t.food}</p><ul>${foodList(poi.food)}</ul></div></div>`;dialog.showModal();document.body.classList.add('modal-open');}
+function applyLanguage(){document.documentElement.lang=lang;data=lang==='en'?window.TRIP_DATA_EN:window.TRIP_DATA;const s=staticText[lang];Object.entries(s).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.innerHTML=value;});document.title=lang==='en'?'Balkan Summer · Family Route 2026':'Балканское лето · Семейный маршрут 2026';const spans=document.querySelectorAll('#languageToggle span');spans[0].classList.toggle('active',lang==='ru');spans[1].classList.toggle('active',lang==='en');renderStops();}
 
-function renderStops() {
-  stopsRoot.innerHTML = data.map((stop, index) => `
-    <article class="stop ${index === 0 ? 'open' : ''}" data-stop="${esc(stop.id)}">
-      <button class="stop-head" type="button" aria-expanded="${index === 0}" aria-controls="panel-${esc(stop.id)}">
-        <span class="stop-number">${esc(stop.number)}</span>
-        <span class="stop-title"><small>${esc(stop.dates)} · ${esc(stop.country)}</small><strong>${esc(stop.city)}</strong><em>${esc(stop.nights)} · ${esc(stop.hotel)}</em></span>
-        <span class="stop-toggle">+</span>
-      </button>
-      <div class="stop-panel" id="panel-${esc(stop.id)}">
-        <div class="stop-content">
-          ${stop.transfer ? `<section class="transfer-card"><div class="transfer-route"><span>Переезд</span><strong>${esc(stop.transfer.from)}</strong></div><div class="transfer-time"><b>${esc(stop.transfer.time)}</b><small>${esc(stop.transfer.distance)}</small></div><p>${esc(stop.transfer.note)}</p></section>` : ''}
-          <section class="general-block"><p class="mini-title">Общее</p><p>${esc(stop.intro)}</p><div class="transport-pill">⌁ ${esc(stop.transport)}</div></section>
-          ${stop.arrival ? `<section class="arrival"><p class="mini-title">${esc(stop.arrival.title)}</p><p>${esc(stop.arrival.text)}</p><div class="inline-links">${stop.arrival.links.map(x => link(x.label,x.url)).join('')}</div></section>` : ''}
-          <section class="weather-block">
-            <div class="weather-top"><div><p class="mini-title">Типичная погода</p><strong>${esc(stop.weather.high)}</strong><span>днём</span></div><div class="weather-art"><span>☀</span><i></i><i></i><i></i></div></div>
-            <div class="weather-grid"><div><small>Ночью</small><b>${esc(stop.weather.low)}</b></div><div><small>Осадки</small><b>${esc(stop.weather.rain)}</b></div><div><small>Ощущение</small><b>${esc(stop.weather.feel)}</b></div></div>
-            <p class="weather-note">${esc(stop.weather.note)}</p>
-          </section>
-          ${stop.warning ? `<aside class="warning"><strong>Обратите внимание</strong><p>${esc(stop.warning)}</p></aside>` : ''}
-          ${activitiesList(stop.activities)}
-          <section class="poi-section"><div class="subheading"><p class="mini-title">Планируем посетить</p><span>${stop.pois.length} мест</span></div>
-            <div class="poi-list">${stop.pois.map((poi, poiIndex) => `<button class="poi-row" type="button" data-stop-index="${index}" data-poi-index="${poiIndex}"><span class="poi-icon">${poi.icon}</span><span><strong>${esc(poi.name)}</strong><small>${esc(poi.teaser)}</small><em>${esc(poi.duration)} · ${esc(poi.age)}</em></span><b>→</b></button>`).join('')}</div>
-          </section>
-        </div>
-      </div>
-    </article>`).join('');
-}
-
-function openPoi(stopIndex, poiIndex) {
-  const stop = data[stopIndex]; const poi = stop.pois[poiIndex];
-  dialogContent.innerHTML = `
-    <div class="dialog-hero"><span>${poi.icon}</span><p>${esc(stop.city)} · ${esc(poi.duration)}</p><h2 id="dialogTitle">${esc(poi.name)}</h2><div class="tag">Возраст: ${esc(poi.age)}</div></div>
-    <div class="dialog-body">
-      <p class="lead">${esc(poi.description)}</p>
-      <div class="dialog-actions">${link('Показать на карте',poi.map,'primary')}${link('Начать навигацию',poi.nav)}${link('Официальный сайт',poi.website)}</div>
-      <div class="practical"><div><span>Ⓟ</span><section><strong>Парковка и подход</strong><p>${esc(poi.parking)}</p></section></div><div><span>◷</span><section><strong>Когда приезжать</strong><p>${esc(poi.hours)}</p></section></div><div class="attention"><span>!</span><section><strong>На что обратить внимание</strong><p>${esc(poi.watch)}</p></section></div></div>
-      <div class="food-card"><p class="mini-title">Где поесть рядом · Google на 09.08.26</p><ul>${foodList(poi.food)}</ul></div>
-    </div>`;
-  dialog.showModal(); document.body.classList.add('modal-open');
-}
-
-renderStops();
-stopsRoot.addEventListener('click', event => {
-  const head = event.target.closest('.stop-head');
-  if (head) { const stop = head.closest('.stop'); const open = stop.classList.toggle('open'); head.setAttribute('aria-expanded', open); return; }
-  const poi = event.target.closest('.poi-row'); if (poi) openPoi(Number(poi.dataset.stopIndex), Number(poi.dataset.poiIndex));
-});
-document.querySelector('#dialogClose').addEventListener('click', () => dialog.close());
-dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
-dialog.addEventListener('close', () => document.body.classList.remove('modal-open'));
-document.querySelector('#expandAll').addEventListener('click', e => {
-  const stops = [...document.querySelectorAll('.stop')]; const shouldOpen = stops.some(s => !s.classList.contains('open'));
-  stops.forEach(s => { s.classList.toggle('open', shouldOpen); s.querySelector('.stop-head').setAttribute('aria-expanded', shouldOpen); });
-  e.currentTarget.textContent = shouldOpen ? 'Свернуть всё' : 'Развернуть всё';
-});
+stopsRoot.addEventListener('click',event=>{const head=event.target.closest('.stop-head');if(head){const selected=head.closest('.stop'),wasOpen=selected.classList.contains('open');document.querySelectorAll('.stop.open').forEach(stop=>{stop.classList.remove('open');stop.querySelector('.stop-head').setAttribute('aria-expanded','false');});if(!wasOpen){selected.classList.add('open');head.setAttribute('aria-expanded','true');}return;}const poi=event.target.closest('.poi-row');if(poi)openPoi(Number(poi.dataset.stopIndex),Number(poi.dataset.poiIndex));});
+document.querySelector('#languageToggle').addEventListener('click',()=>{lang=lang==='ru'?'en':'ru';localStorage.setItem('balkan26-language',lang);applyLanguage();});
+document.querySelector('#dialogClose').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});dialog.addEventListener('close',()=>document.body.classList.remove('modal-open'));
+applyLanguage();

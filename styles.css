@@ -10,6 +10,9 @@ button{color:inherit}
 .brand{font-family:Unbounded,sans-serif;color:#fff;text-decoration:none;font-size:17px;letter-spacing:-1px}
 .brand span{color:var(--sun)}
 .compact-button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:9px 14px;font-size:12px;cursor:pointer}
+.language-toggle{display:flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:rgba(255,255,255,.55);border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800;cursor:pointer}
+.language-toggle i{width:1px;height:12px;background:rgba(255,255,255,.25)}
+.language-toggle span.active{color:var(--sun)}
 .hero-content{position:relative;z-index:1;max-width:1120px;margin:82px auto 0}
 .eyebrow,.mini-title{text-transform:uppercase;font-size:11px;line-height:1.4;font-weight:800;letter-spacing:.14em}
 .eyebrow{color:#b9d9d3}
@@ -136,7 +139,9 @@ footer{background:#0d2c28;color:#a9c5c0;padding:40px 22px;text-align:center;font
 }
 
 /* Mobile corrections and itinerary additions */
-.hero h1{font-size:clamp(40px,12vw,124px);line-height:.9;letter-spacing:-.07em;max-width:100%;overflow-wrap:anywhere}
+.hero h1{font-size:clamp(36px,11vw,124px);line-height:.9;letter-spacing:-.07em;max-width:100%;overflow-wrap:normal;word-break:normal}
+.hero h1 .title-main{display:block;white-space:nowrap;font-size:clamp(28px,9.6vw,116px);letter-spacing:-.075em}
+.hero h1 em{display:block}
 .hero-poster{margin:30px 0 0;width:min(100%,620px);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.2);box-shadow:0 18px 50px rgba(0,0,0,.22)}
 .hero-poster img{display:block;width:100%;height:auto}
 .transfer-card,.activities{margin-left:42px;margin-bottom:26px}
@@ -155,7 +160,18 @@ footer{background:#0d2c28;color:#a9c5c0;padding:40px 22px;text-align:center;font
 .activity-row p{font-size:10px;line-height:1.6;color:#617570;margin:4px 0 0}
 .restaurant-meta{display:flex!important;flex-wrap:wrap;gap:5px;margin-top:7px}
 .restaurant-meta b{font-size:8px!important;line-height:1.2;background:#ebe5d7;border-radius:999px;padding:5px 7px;color:#415d57}
-@media(max-width:390px){.hero{padding-left:16px;padding-right:16px}.hero h1{font-size:39px;letter-spacing:-.075em}.hero-copy{font-size:15px}.hero-stats{gap:5px}.hero-stats div{min-width:78px}.stop-title strong{font-size:24px}.general-block,.arrival,.weather-block,.poi-section,.transfer-card,.activities{margin-left:32px}.warning{margin-left:32px}.stop-head{grid-template-columns:32px 1fr 28px}.food-card li{flex-direction:column}.food-links{margin-top:5px}}
-@media(min-width:720px){.transfer-card,.activities{margin-left:70px}.hero-poster{width:520px}}
+.journey-section,.shopping-section{margin:0 0 28px 42px}
+.journey-section{padding:18px;border:1px solid rgba(230,109,80,.28);background:#fff3eb;border-radius:14px}
+.journey-list article,.shopping-card{display:grid;grid-template-columns:32px 1fr;gap:10px;padding:15px 0;border-top:1px solid var(--line)}
+.journey-list article:first-child{margin-top:8px}
+.journey-list article>span,.shopping-card>span{font-size:21px}
+.journey-list strong,.shopping-card strong{font-size:12px}
+.journey-list p,.shopping-card p{font-size:10px;line-height:1.6;color:#5f756f;margin:5px 0 8px}
+.journey-meta{font-size:9px;font-weight:800;color:var(--coral);margin-top:4px}
+.shopping-card small{display:block;font-size:9px;line-height:1.5;color:#617570;margin-top:4px}
+.shopping-card .inline-links,.journey-list .inline-links{margin-top:9px}
+@media(max-width:390px){.hero{padding-left:16px;padding-right:16px}.hero h1{font-size:38px;letter-spacing:-.075em}.hero-copy{font-size:15px}.hero-stats{gap:4px}.hero-stats div{min-width:0;flex:1;padding-left:9px}.hero-stats span{font-size:9px}.stop-title strong{font-size:24px}.general-block,.arrival,.weather-block,.poi-section,.transfer-card,.activities,.journey-section,.shopping-section{margin-left:32px}.warning{margin-left:32px}.stop-head{grid-template-columns:32px 1fr 28px}.food-card li{flex-direction:column}.food-links{margin-top:5px}}
+@media(max-width:340px){.hero h1 .title-main{font-size:27px}.hero{padding-left:14px;padding-right:14px}.hero-copy{font-size:14px}.stop-title strong{font-size:21px}.transfer-card{grid-template-columns:1fr}.transfer-time{text-align:left}.transfer-card>p{grid-column:1}.journey-section,.shopping-section{padding:13px}}
+@media(min-width:720px){.transfer-card,.activities,.journey-section,.shopping-section{margin-left:70px}.hero-poster{width:520px}}
 
 
